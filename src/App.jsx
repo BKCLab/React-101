@@ -1,35 +1,84 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Box, Container, CssBaseline, Grid, IconButton, Paper, Table, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import styles from "./styles.module.css";
+import axios from "axios";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [userId, setUserId] = useState(1);
+  const [userInfo, setUserInfo] = useState(null);
+
+  async function fetchUserInfo() {
+    try {
+      const baseURL = "https://jsonplaceholder.typicode.com/users";
+      const response = await axios.get(`${baseURL}/${userId}`);
+      console.log(response.data);
+      setUserInfo(response.data);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to load user info!");
+    }
+  }
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, [userId]);
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <CssBaseline />
+      <Container className={styles.container}>
+        <Grid container className={styles.gridContainer}>
+          <Grid item xs={2} className={styles.navigator}>
+            <IconButton onClick={() => setUserId(Math.max(userId - 1, 1))}>
+              <NavigateBeforeIcon />
+            </IconButton>
+          </Grid>
+          <Grid item xs={8}>
+            <Typography variant="h4" align="center" gutterBottom>
+              Welcome to React 101!
+            </Typography>
+            <Paper className={styles.paper}>
+              <TableContainer>
+                <Table>
+                  <TableRow>
+                    <TableCell style={{ width: "20%" }}>UserId</TableCell>
+                    <TableCell>{userId}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Username</TableCell>
+                    <TableCell>{userInfo.username}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Name</TableCell>
+                    <TableCell>{userInfo.name}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Email</TableCell>
+                    <TableCell>{userInfo.email}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Phone</TableCell>
+                    <TableCell>{userInfo.phone}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Website</TableCell>
+                    <TableCell>{userInfo.website}</TableCell>
+                  </TableRow>
+                </Table>
+              </TableContainer>
+            </Paper>
+          </Grid>
+          <Grid item xs={2} className={styles.navigator}>
+            <IconButton onClick={() => setUserId(Math.min(userId + 1, 10))}>
+              <NavigateNextIcon />
+            </IconButton>
+          </Grid>
+        </Grid>
+      </Container>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
