@@ -1,13 +1,23 @@
-import { Box, Container, CssBaseline, Grid, IconButton, Paper, Table, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Container, CssBaseline, Grid, IconButton, Paper, Table, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import styles from "./styles.module.css";
 import axios from "axios";
 
+const MAX_USER_ID = 10;
+const MIN_USER_ID = 1;
+
 function App() {
   const [userId, setUserId] = useState(1);
   const [userInfo, setUserInfo] = useState(null);
+
+  function nextUser() {
+    setUserId(userId - 1);
+  }
+  function previousUser() {
+    setUserId(userId + 1);
+  }
 
   async function fetchUserInfo() {
     try {
@@ -31,7 +41,7 @@ function App() {
       <Container className={styles.container}>
         <Grid container className={styles.gridContainer}>
           <Grid item xs={2} className={styles.navigator}>
-            <IconButton onClick={() => setUserId(Math.max(userId - 1, 1))}>
+            <IconButton onClick={nextUser} disabled={userId === MIN_USER_ID}>
               <NavigateBeforeIcon />
             </IconButton>
           </Grid>
@@ -71,7 +81,7 @@ function App() {
             </Paper>
           </Grid>
           <Grid item xs={2} className={styles.navigator}>
-            <IconButton onClick={() => setUserId(Math.min(userId + 1, 10))}>
+            <IconButton onClick={previousUser} disabled={userId === MAX_USER_ID}>
               <NavigateNextIcon />
             </IconButton>
           </Grid>
